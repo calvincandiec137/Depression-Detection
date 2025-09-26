@@ -11,7 +11,7 @@ import os
 class AudioPreprocessor:
     """
     A comprehensive audio preprocessor for depression detection from voice analysis.
-    Handles both MP3 and WAV files with multiple preprocessing options.
+    Preserves gaps/silences for sentiment and behavioral analysis.
     """
     
     def __init__(self, target_sr=16000, min_silence_duration=0.5):
@@ -20,7 +20,7 @@ class AudioPreprocessor:
         
         Args:
             target_sr (int): Target sample rate (16000Hz or 22050Hz recommended for speech)
-            min_silence_duration (float): Minimum silence duration in seconds to split segments
+            min_silence_duration (float): Minimum silence duration in seconds to consider as meaningful gap
         """
         self.target_sr = target_sr
         self.min_silence_duration = min_silence_duration
@@ -65,7 +65,7 @@ class AudioPreprocessor:
     
     def remove_background_noise(self, audio, sr, method='nonstationary'):
         """
-        Remove background noise from audio.
+        Remove background noise from audio while preserving speech gaps.
         
         Args:
             audio (np.array): Input audio signal
@@ -73,16 +73,16 @@ class AudioPreprocessor:
             method (str): 'stationary' or 'nonstationary'
             
         Returns:
-            cleaned_audio (np.array): Denoised audio
+            cleaned_audio (np.array): Denoised audio with preserved gaps
         """
         try:
             if method == 'stationary':
-                # Requires a noise sample (first 0.5 seconds assumed to be noise)
+                # Requires a noise sample (use a segment with only background noise)
                 noise_duration = min(int(0.5 * sr), len(audio) // 3)
                 noise_sample = audio[:noise_duration]
                 cleaned_audio = nr.reduce_noise(y=audio, y_noise=noise_sample, sr=sr)
             else:
-                # Non-stationary noise reduction (no need for noise sample)
+                # Non-stationary noise reduction - preserves silence/gap structure
                 cleaned_audio = nr.reduce_noise(y=audio, sr=sr, stationary=False)
             
             print(f"✅ Noise reduction applied ({method} method)")
@@ -92,51 +92,115 @@ class AudioPreprocessor:
             print(f"❌ Error in noise reduction: {e}")
             return audio
     
-    def remove_silence(self, audio, sr, top_db=25, min_silence_len=0.3):
+    def analyze_silence_patterns(self, audio, sr, top_db=25):
         """
-        Remove silent portions from audio using Voice Activity Detection.
+        Analyze silence patterns without removing them.
+        Returns timestamps and durations of speech and silence segments.
         
         Args:
             audio (np.array): Input audio signal
             sr (int): Sample rate
             top_db (int): Threshold in dB below reference for silence
-            min_silence_len (float): Minimum silence length in seconds
             
         Returns:
-            non_silent_audio (np.array): Audio with silence removed
-            segments (list): List of non-silent segments [(start, end), ...]
+            segments (list): List of segments with type and timing information
+            silence_stats (dict): Statistics about silence patterns
         """
         try:
-            # Convert min_silence_len to samples
-            min_silence_samples = int(min_silence_len * sr)
-            
-            # Find non-silent intervals
+            # Find non-silent intervals (speech segments)
             non_silent_intervals = librosa.effects.split(
                 audio, top_db=top_db, frame_length=1024, hop_length=256
             )
             
-            # Filter out very short segments (likely noise)
-            valid_intervals = []
-            for start, end in non_silent_intervals:
-                duration = (end - start) / sr
-                if duration >= 0.1:  # Keep segments longer than 0.1 seconds
-                    valid_intervals.append((start, end))
+            segments = []
+            silence_durations = []
+            speech_durations = []
             
-            if len(valid_intervals) == 0:
-                print("⚠️ No non-silent segments found. Returning original audio.")
-                return audio, [(0, len(audio))]
+            # Add initial silence if present
+            if non_silent_intervals[0][0] > 0:
+                silence_dur = non_silent_intervals[0][0] / sr
+                segments.append({'type': 'silence', 'start': 0, 'end': non_silent_intervals[0][0], 
+                               'duration': silence_dur})
+                silence_durations.append(silence_dur)
             
-            # Concatenate non-silent intervals
-            non_silent_audio = np.concatenate([audio[start:end] for start, end in valid_intervals])
+            # Process each speech segment and following silence
+            for i, (start, end) in enumerate(non_silent_intervals):
+                # Speech segment
+                speech_dur = (end - start) / sr
+                segments.append({'type': 'speech', 'start': start, 'end': end, 
+                               'duration': speech_dur})
+                speech_durations.append(speech_dur)
+                
+                # Following silence (if any)
+                if i < len(non_silent_intervals) - 1:
+                    next_start = non_silent_intervals[i+1][0]
+                    silence_dur = (next_start - end) / sr
+                    segments.append({'type': 'silence', 'start': end, 'end': next_start, 
+                                   'duration': silence_dur})
+                    silence_durations.append(silence_dur)
             
-            print(f"✅ Silence removal: {len(non_silent_intervals)} segments found")
-            print(f"   Original duration: {len(audio)/sr:.2f}s, After VAD: {len(non_silent_audio)/sr:.2f}s")
+            # Add final silence if present
+            if non_silent_intervals[-1][1] < len(audio):
+                silence_dur = (len(audio) - non_silent_intervals[-1][1]) / sr
+                segments.append({'type': 'silence', 'start': non_silent_intervals[-1][1], 
+                               'end': len(audio), 'duration': silence_dur})
+                silence_durations.append(silence_dur)
             
-            return non_silent_audio, valid_intervals
+            # Calculate statistics
+            silence_stats = {
+                'total_silence_time': sum(silence_durations),
+                'total_speech_time': sum(speech_durations),
+                'average_silence_duration': np.mean(silence_durations) if silence_durations else 0,
+                'average_speech_duration': np.mean(speech_durations) if speech_durations else 0,
+                'silence_count': len(silence_durations),
+                'speech_count': len(speech_durations),
+                'speech_to_silence_ratio': sum(speech_durations) / sum(silence_durations) if sum(silence_durations) > 0 else float('inf'),
+                'longest_silence': max(silence_durations) if silence_durations else 0,
+                'longest_speech': max(speech_durations) if speech_durations else 0
+            }
+            
+            print(f"✅ Silence pattern analysis complete")
+            print(f"   Speech segments: {len(speech_durations)}, Silence segments: {len(silence_durations)}")
+            print(f"   Total speech: {silence_stats['total_speech_time']:.2f}s, Total silence: {silence_stats['total_silence_time']:.2f}s")
+            
+            return segments, silence_stats
             
         except Exception as e:
-            print(f"❌ Error in silence removal: {e}")
-            return audio, [(0, len(audio))]
+            print(f"❌ Error in silence pattern analysis: {e}")
+            return [], {}
+    
+    def clean_audio_preserving_gaps(self, audio, sr):
+        """
+        Clean audio while preserving the gap structure for sentiment analysis.
+        
+        Args:
+            audio (np.array): Input audio signal
+            sr (int): Sample rate
+            
+        Returns:
+            cleaned_audio (np.array): Cleaned audio with preserved gaps
+            segments (list): Segment information
+            silence_stats (dict): Silence pattern statistics
+        """
+        try:
+            # First, analyze the silence patterns
+            segments, silence_stats = self.analyze_silence_patterns(audio, sr)
+            
+            # Apply noise reduction to entire audio (preserves gap structure)
+            cleaned_audio = self.remove_background_noise(audio, sr)
+            
+            # Apply bandpass filter to focus on speech frequencies
+            filtered_audio = self.apply_bandpass_filter(cleaned_audio, sr)
+            
+            # Normalize the audio
+            normalized_audio = self.normalize_audio(filtered_audio)
+            
+            print("✅ Audio cleaned while preserving gap structure")
+            return normalized_audio, segments, silence_stats
+            
+        except Exception as e:
+            print(f"❌ Error in gap-preserving cleaning: {e}")
+            return audio, [], {}
     
     def normalize_audio(self, audio, method='peak'):
         """
@@ -201,18 +265,20 @@ class AudioPreprocessor:
             print(f"❌ Error in bandpass filtering: {e}")
             return audio
     
-    def preprocess_audio(self, file_path, steps=['load', 'denoise', 'vad', 'normalize', 'filter']):
+    def preprocess_audio(self, file_path, preserve_gaps=True, steps=['load', 'denoise', 'normalize', 'filter']):
         """
         Complete preprocessing pipeline for audio files.
         
         Args:
             file_path (str): Path to audio file
+            preserve_gaps (bool): Whether to preserve silence gaps for analysis
             steps (list): List of preprocessing steps to apply
             
         Returns:
             result (dict): Dictionary containing processed audio and metadata
         """
         print(f"🎯 Starting preprocessing pipeline for: {file_path}")
+        print(f"📝 Gap preservation: {'ENABLED' if preserve_gaps else 'DISABLED'}")
         print("-" * 50)
         
         result = {
@@ -220,9 +286,11 @@ class AudioPreprocessor:
             'processed_audio': None,
             'sample_rate': self.target_sr,
             'segments': [],
+            'silence_stats': {},
             'processing_steps': [],
             'duration_original': 0,
-            'duration_processed': 0
+            'duration_processed': 0,
+            'preserve_gaps': preserve_gaps
         }
         
         try:
@@ -235,28 +303,25 @@ class AudioPreprocessor:
                 result['duration_original'] = len(audio) / sr
                 result['processing_steps'].append('loaded')
             
-            current_audio = audio.copy()
-            
-            # Step 2: Denoise
-            if 'denoise' in steps:
-                current_audio = self.remove_background_noise(current_audio, sr)
-                result['processing_steps'].append('denoised')
-            
-            # Step 3: Voice Activity Detection (remove silence)
-            if 'vad' in steps:
-                current_audio, segments = self.remove_silence(current_audio, sr)
+            # Step 2: Choose processing method based on gap preservation setting
+            if preserve_gaps:
+                # Preserve gaps for sentiment analysis
+                current_audio, segments, silence_stats = self.clean_audio_preserving_gaps(audio, sr)
                 result['segments'] = segments
-                result['processing_steps'].append('silence_removed')
-            
-            # Step 4: Normalize
-            if 'normalize' in steps:
-                current_audio = self.normalize_audio(current_audio)
-                result['processing_steps'].append('normalized')
-            
-            # Step 5: Bandpass filter
-            if 'filter' in steps:
-                current_audio = self.apply_bandpass_filter(current_audio, sr)
-                result['processing_steps'].append('filtered')
+                result['silence_stats'] = silence_stats
+                result['processing_steps'].extend(['denoised', 'filtered', 'normalized'])
+            else:
+                # Original method (remove silence)
+                current_audio = audio.copy()
+                if 'denoise' in steps:
+                    current_audio = self.remove_background_noise(current_audio, sr)
+                    result['processing_steps'].append('denoised')
+                if 'filter' in steps:
+                    current_audio = self.apply_bandpass_filter(current_audio, sr)
+                    result['processing_steps'].append('filtered')
+                if 'normalize' in steps:
+                    current_audio = self.normalize_audio(current_audio)
+                    result['processing_steps'].append('normalized')
             
             result['processed_audio'] = current_audio
             result['duration_processed'] = len(current_audio) / sr
@@ -266,6 +331,10 @@ class AudioPreprocessor:
             print(f"📊 Original duration: {result['duration_original']:.2f}s")
             print(f"📊 Processed duration: {result['duration_processed']:.2f}s")
             print(f"🔧 Steps applied: {', '.join(result['processing_steps'])}")
+            
+            if preserve_gaps:
+                print(f"🎯 Gap analysis available: {len(result['segments'])} segments")
+                print(f"   Speech-to-Silence ratio: {result['silence_stats'].get('speech_to_silence_ratio', 0):.2f}")
             
             return result
             
@@ -288,35 +357,64 @@ class AudioPreprocessor:
         except Exception as e:
             print(f"❌ Error saving audio: {e}")
     
-    def visualize_audio(self, original_audio, processed_audio, sr, title="Audio Comparison"):
+    def visualize_audio_with_segments(self, original_audio, processed_audio, segments, sr, title="Audio Analysis"):
         """
-        Visualize original vs processed audio.
+        Visualize original vs processed audio with segment annotations.
         
         Args:
             original_audio (np.array): Original audio signal
             processed_audio (np.array): Processed audio signal
+            segments (list): Segment information
             sr (int): Sample rate
             title (str): Plot title
         """
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8))
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
         
         # Plot original audio
         times_orig = np.arange(len(original_audio)) / sr
-        ax1.plot(times_orig, original_audio, alpha=0.7)
-        ax1.set_title(f'{title} - Original Audio')
+        ax1.plot(times_orig, original_audio, alpha=0.7, color='blue', label='Original')
+        ax1.set_title(f'{title} - Original Audio with Segment Analysis')
         ax1.set_ylabel('Amplitude')
         ax1.grid(True)
+        ax1.legend()
         
-        # Plot processed audio
+        # Plot processed audio with segment annotations
         times_proc = np.arange(len(processed_audio)) / sr
-        ax2.plot(times_proc, processed_audio, alpha=0.7, color='orange')
-        ax2.set_title('Processed Audio')
+        ax2.plot(times_proc, processed_audio, alpha=0.7, color='orange', label='Processed')
+        
+        # Add segment annotations
+        for segment in segments:
+            start_time = segment['start'] / sr
+            end_time = segment['end'] / sr
+            if segment['type'] == 'speech':
+                ax2.axvspan(start_time, end_time, alpha=0.3, color='green', label='Speech' if 'Speech' not in ax2.get_legend_handles_labels()[1] else "")
+            else:
+                ax2.axvspan(start_time, end_time, alpha=0.3, color='red', label='Silence' if 'Silence' not in ax2.get_legend_handles_labels()[1] else "")
+        
+        ax2.set_title('Processed Audio with Speech/Silence Segments')
         ax2.set_xlabel('Time (s)')
         ax2.set_ylabel('Amplitude')
         ax2.grid(True)
+        ax2.legend()
         
         plt.tight_layout()
         plt.show()
+    
+    def export_silence_analysis(self, silence_stats, output_path="silence_analysis.json"):
+        """
+        Export silence analysis results to JSON file.
+        
+        Args:
+            silence_stats (dict): Silence pattern statistics
+            output_path (str): Output file path
+        """
+        try:
+            import json
+            with open(output_path, 'w') as f:
+                json.dump(silence_stats, f, indent=2)
+            print(f"💾 Silence analysis exported to: {output_path}")
+        except Exception as e:
+            print(f"❌ Error exporting analysis: {e}")
 
 # Example usage and testing
 def main():
@@ -325,20 +423,21 @@ def main():
     # Initialize preprocessor
     preprocessor = AudioPreprocessor(target_sr=16000)
     
-    # Example with a test file (you would replace this with your actual file paths)
+    # Example with a test file
     test_files = [
-        "whats.wav",  # Replace with your WAV file
-        "sample_audio.mp3",  # Replace with your MP3 file
+        "whats.wav",  # Your WAV file
+        # "sample_audio.mp3",  # Your MP3 file
     ]
     
     for file_path in test_files:
         if os.path.exists(file_path):
             print(f"\n🎯 Processing: {file_path}")
             
-            # Apply complete preprocessing pipeline
+            # Apply preprocessing WITH gap preservation
             result = preprocessor.preprocess_audio(
                 file_path,
-                steps=['load', 'denoise', 'vad', 'normalize', 'filter']
+                preserve_gaps=True,  # ← This is the key change!
+                steps=['load', 'denoise', 'normalize', 'filter']
             )
             
             if result is not None:
@@ -350,16 +449,31 @@ def main():
                     output_path
                 )
                 
-                # Visualize results
-                preprocessor.visualize_audio(
+                # Visualize with segment analysis
+                preprocessor.visualize_audio_with_segments(
                     result['original_audio'],
                     result['processed_audio'],
+                    result['segments'],
                     result['sample_rate'],
                     title=f"Audio Preprocessing: {file_path}"
                 )
+                
+                # Export silence analysis
+                preprocessor.export_silence_analysis(
+                    result['silence_stats'],
+                    f"silence_analysis_{os.path.basename(file_path).split('.')[0]}.json"
+                )
+                
+                # Print key depression-relevant features
+                print("\n🎯 Depression-relevant acoustic features:")
+                stats = result['silence_stats']
+                print(f"   Average pause duration: {stats.get('average_silence_duration', 0):.2f}s")
+                print(f"   Speech-to-Silence ratio: {stats.get('speech_to_silence_ratio', 0):.2f}")
+                print(f"   Longest pause: {stats.get('longest_silence', 0):.2f}s")
+                print(f"   Number of pauses: {stats.get('silence_count', 0)}")
+                
         else:
             print(f"⚠️ File not found: {file_path}")
-            print("💡 Please update the file paths in the main() function")
 
 if __name__ == "__main__":
     main()
