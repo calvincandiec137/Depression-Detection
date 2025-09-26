@@ -1,0 +1,25 @@
+{
+  "transcriptId": "2c74aaa1-d1d8-4955-b52c-37fcdee7cabc_1758885029412",
+  "originalTranscript": "Life feels overwhelmingly heavy and meaningless. Even simple tasks seems impossible, and sleep offers no relief. Social interaction feels exhausting, leading to isolation. Everyday is a struggle to find purpose, leaving a persistent sense of emptiness and fatigue.",
+  "chunks": [
+    {
+      "id": 0,
+      "text": "Life feels overwhelmingly heavy and meaningless. Even simple tasks seems impossible, and sleep offers no relief. Social interaction feels exhausting, leading to isolation.",
+      "wordCount": 23,
+      "startPosition": 0,
+      "endPosition": 171,
+      "timestamp": "Chunk_1"
+    },
+    {
+      "id": 1,
+      "text": "Everyday is a struggle to find purpose, leaving a persistent sense of emptiness and fatigue.",
+      "wordCount": 15,
+      "startPosition": 172,
+      "endPosition": 264,
+      "timestamp": "Chunk_2"
+    }
+  ],
+  "chunkingTimestamp": "2025-09-26T11:10:41.804Z",
+  "totalChunks": 2,
+  "totalWords": 38
+}
