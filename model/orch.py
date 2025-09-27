@@ -1,9 +1,20 @@
 import random
-from google import genai
+from elevenlabs import ElevenLabs
+import google.generativeai as genai
 
 # --- CONFIG ---
+ELEVENLABS_API_KEY = "4dbd8ed5b7f12d392ee20e2e3681d4ce99705c8b17acfd22a52daf8793ae59b5"
 GEMINI_API_KEY = "AIzaSyBHwyVyViAoCUQuRLaYVFMAogc5wyxWVlI"
-client = genai.Client(api_key=GEMINI_API_KEY)
+
+# Initialize ElevenLabs client
+eleven_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+genai.configure(api_key=GEMINI_API_KEY)
+
+# Gemini LLM wrapper
+def gemini_chat(prompt):
+    model = genai.GenerativeModel("gemini-2.5-pro")
+    response = model.generate_content(prompt)
+    return response.text if response else "No response"
 
 # --- Mock Models ---
 def mock_transcribe(audio_path):
@@ -27,10 +38,10 @@ def mock_tone_model(audio_path):
     confidence = round(random.uniform(0.5, 0.99), 2)
     return tone, confidence
 
-# --- Decide Agent via Gemini ---
+# --- Agent Decision ---
 def decide_agent(outputs):
     prompt = f"""
-You are a supervisor agent. The user audio was analyzed by 3 models:
+The user audio analysis:
 Sentiment: {outputs['sentiment'][0]} (Confidence: {outputs['sentiment'][1]})
 Emotion: {outputs['emotion'][0]} (Confidence: {outputs['emotion'][1]})
 Tone: {outputs['tone'][0]} (Confidence: {outputs['tone'][1]})
@@ -42,14 +53,9 @@ Decide which agent should handle the user:
 
 Respond with the agent name only.
 """
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
-    agent = response.text.strip()
-    return agent
+    return gemini_chat(prompt).strip()
 
-# --- Main Orchestration ---
+# --- Orchestration ---
 def process_audio(audio_path):
     text = mock_transcribe(audio_path)
     sentiment = mock_sentiment_model(text)
@@ -66,19 +72,30 @@ def process_audio(audio_path):
     agent = decide_agent(outputs)
     return agent, outputs
 
-# --- Interactive CLI ---
+# --- Text-to-Speech ---
+def speak_text(text):
+    voices = eleven_client.list_voices()
+    voice_id = voices[0].voice_id
+    audio = eleven_client.generate(text=text, voice=voice_id)
+    eleven_client.play(audio)
+
+# --- CLI ---
 if __name__ == "__main__":
-    print("Agentic Audio AI Orchestration (Gemini)")
+    print("Agentic Audio AI Orchestration (Gemini + ElevenLabs)")
     print("Type 'quit' to exit.\n")
 
     while True:
         audio_path = input("Enter path to audio file: ").strip()
         if audio_path.lower() in ["quit", "exit", "q"]:
             break
+
         agent, outputs = process_audio(audio_path)
+
         print("\n--- Analysis ---")
         print(f"Transcribed Text: {outputs['text']}")
         print(f"Sentiment: {outputs['sentiment'][0]} (Confidence: {outputs['sentiment'][1]})")
         print(f"Emotion: {outputs['emotion'][0]} (Confidence: {outputs['emotion'][1]})")
         print(f"Tone: {outputs['tone'][0]} (Confidence: {outputs['tone'][1]})")
         print(f"Recommended Agent: {agent}\n")
+
+        speak_text(f"Recommended agent is {agent}. User text: {outputs['text']}")
