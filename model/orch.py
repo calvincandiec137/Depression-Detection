@@ -3,8 +3,8 @@ from elevenlabs import ElevenLabs
 import google.generativeai as genai
 
 # --- CONFIG ---
-ELEVENLABS_API_KEY = "4dbd8ed5b7f12d392ee20e2e3681d4ce99705c8b17acfd22a52daf8793ae59b5"
-GEMINI_API_KEY = "AIzaSyBHwyVyViAoCUQuRLaYVFMAogc5wyxWVlI"
+ELEVENLABS_API_KEY = "better_luck_next_time"
+GEMINI_API_KEY = "better_luck_next_time"
 
 # Initialize ElevenLabs client
 eleven_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)

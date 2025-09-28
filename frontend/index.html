@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindVoice - AI-Powered Mental Health Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <h2>MindVoice</h2>
+            </div>
+            <!-- Added hamburger menu for mobile -->
+            <div class="hamburger-menu" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links" id="nav-links">
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <button class="btn-primary" onclick="showAuth()">Get Started</button>
+            </div>
+        </nav>
+
+        <main class="hero-section">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">IMMERSIVE</span>
+                        <br>Mental Health Analysis
+                    </h1>
+                    <p  class="hero-description">
+                        Advanced AI-powered voice analysis to detect early signs of depression and provide personalized mental health insights.
+                    </p>
+                    <div class="hero-buttons">
+                        <button class="btn-primary large" onclick="showAuth()">Start Your Journey</button>
+                        <button class="btn-secondary large" onclick="scrollToFeatures()">Learn More</button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="floating-card">
+                        <div class="card-content">
+                            <div class="pulse-animation"></div>
+                            <p>Voice Analysis in Progress...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <section id="features" class="features-section">
+            <div class="container">
+                <h2 class="section-title">Our Approach</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-number">1</div>
+                        <h3>Voice Analysis</h3>
+                        <p style="color:white">Advanced AI processes your voice patterns to identify emotional indicators and mental health markers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">2</div>
+                        <h3>Personalized Insights</h3>
+                        <p style="color:white">Receive detailed reports on your emotional state, tone analysis, and personalized recommendations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-number">3</div>
+                        <h3>Continuous Support</h3>
+                        <p style="color:white">Access resources, journaling tools, and ongoing monitoring to support your mental health journey.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div id="auth-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="hideAuth()">&times;</span>
+            
+            <!-- Login Form -->
+            <div id="login-form" class="auth-form active">
+                <h2>Welcome Back</h2>
+                <p style="color:white">Sign in to continue your mental health journey</p>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <input style="color:white" type="email" id="login-email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input style="color:white" type="password" id="login-password" placeholder="Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary full-width">Sign In</button>
+                </form>
+                <p class="auth-switch" style="color:white">
+                    Don't have an account? <a href="#" onclick="showRegister()">Sign up</a>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div id="register-form" class="auth-form">
+                <h2>Join MindVoice</h2>
+                <p style="color:white">Create your account to start your mental health analysis</p>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <input style="color:white" type="text" id="register-name" placeholder="Full Name" required>
+                    </div>
+                    <div class="form-group">
+                        <input style="color:white" type="email" id="register-email" placeholder="Email" required>
+                    </div>
+                    <div class="form-group">
+                        <input style="color:white" type="password" id="register-password" placeholder="Password" required>
+                    </div>
+                    <div class="form-group">
+                        <input style="color:white" type="password" id="register-confirm" placeholder="Confirm Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary full-width">Create Account</button>
+                </form>
+                <p class="auth-switch" style="color:white">
+                    Already have an account? <a href="#" onclick="showLogin()">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Welcome Page (after first login) -->
+    <div id="welcome-page" class="page">
+        <div class="welcome-container">
+            <div class="welcome-content">
+                <h1>Welcome to MindVoice</h1>
+                <p style="color:white" class="welcome-description">
+                    Your journey to better mental health starts here. Our AI-powered platform analyzes your voice patterns to provide insights into your emotional well-being and mental health state.
+                </p>
+                <div class="welcome-features">
+                    <div class="welcome-feature">
+                        <h3>🎤 Voice Analysis</h3>
+                        <p style="color:white">Record or upload audio for comprehensive emotional analysis</p>
+                    </div>
+                    <div class="welcome-feature">
+                        <h3>📊 Detailed Reports</h3>
+                        <p style="color:white">Get insights on emotions, tone, sentiment, and depression indicators</p>
+                    </div>
+                    <div class="welcome-feature">
+                        <h3>📝 Personal Journal</h3>
+                        <p style="color:white">Track your thoughts and feelings with text and voice notes</p>
+                    </div>
+                    <div class="welcome-feature">
+                        <h3>🎯 Personalized Resources</h3>
+                        <p style="color:white">Access curated content based on your mental health profile</p>
+                    </div>
+                </div>
+                <button class="btn-primary large" onclick="startAssessment()">Begin Mental Health Assessment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mental Health Assessment Page -->
+    <div id="assessment-page" class="page">
+        <div class="assessment-container">
+            <div class="assessment-header">
+                <h1>Mental Health Assessment</h1>
+                <p style="color:white">Please answer the following questions honestly. This will help us create a personalized profile for you.</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <span class="progress-text" style="color:white" id="progress-text">Question 1 of 10</span>
+            </div>
+
+            <div class="assessment-content">
+                <div class="question-card" id="question-card">
+                    <h2 class="question-title" id="question-title"></h2>
+                    <div class="options-container" id="options-container">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+                    <div class="assessment-navigation">
+                        <button class="btn-secondary" id="prev-btn" onclick="previousQuestion()" disabled>Previous</button>
+                        <button class="btn-primary" id="next-btn" onclick="nextQuestion()" disabled>Next</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="assessment-complete" id="assessment-complete" style="display: none;">
+                <div class="completion-card">
+                    <div class="completion-icon">✓</div>
+                    <h2>Assessment Complete!</h2>
+                    <p style="color:white">Thank you for completing the mental health assessment. Your responses will help us provide personalized insights and recommendations.</p>
+                    <button class="btn-primary large" onclick="completeAssessment()">Continue to Dashboard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="dashboard-page" class="page">
+        <div class="dashboard-container">
+            <nav class="sidebar" id="sidebar">
+                <!-- Added hamburger menu for dashboard sidebar -->
+                <div class="mobile-sidebar-header">
+                    <h2 style="color:white">MindVoice</h2>
+                    <button class="sidebar-close" onclick="toggleSidebar()">&times;</button>
+                </div>
+                <div class="sidebar-header">
+                    <h2 style="color:white">MindVoice</h2>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="#" onclick="showDashboardSection('overview')" class="active" style="color:white">Dashboard</a></li>
+                    <li><a href="#" onclick="showDashboardSection('audio')" style="color:white">Voice Analysis</a></li>
+                    <li><a href="#" onclick="showDashboardSection('resources')" style="color:white">Resources</a></li>
+                    <li><a href="#" onclick="showDashboardSection('journal')" style="color:white">Journal</a></li>
+                    <li><a href="#" onclick="showDashboardSection('profile')" style="color:white">Profile</a></li>
+                </ul>
+                <div class="sidebar-footer">
+                    <button class="btn-secondary" onclick="logout()">Logout</button>
+                </div>
+            </nav>
+
+            <main class="dashboard-main">
+                <!-- Added mobile menu toggle button -->
+                <div class="mobile-header">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <h1>Dashboard</h1>
+                </div>
+
+                <div class="dashboard-section active" id="overview-section">
+                    <h1 style="color:white">Welcome back, <span id="user-name"></span>!</h1>
+                    <p style="color:white">Your mental health journey continues here. Click on "Voice Analysis" to start recording or uploading audio.</p>
+                    
+                    <div class="dashboard-cards">
+                        <div class="dashboard-card">
+                            <h3 style="color:white">Assessment Complete</h3>
+                            <p style="color:white">Your mental health profile has been created based on your responses.</p>
+                        </div>
+                        <div class="dashboard-card">
+                            <h3 style="color:white">Next Steps</h3>
+                            <p style="color:white">Upload or record audio for detailed voice analysis and insights.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audio Section -->
+                <div class="dashboard-section" id="audio-section">
+                    <div class="audio-header">
+                        <h2 style="color:white">Voice Analysis</h2>
+                        <p style="color:white">Record your voice or upload an audio file for AI-powered mental health analysis</p>
+                    </div>
+
+                    <div class="audio-interface">
+                        <!-- Recording Section -->
+                        <div class="audio-card">
+                            <div class="audio-card-header">
+                                <h3 style="color:white">🎤 Record Audio</h3>
+                                <p style="color:white">Click the button below to start recording your voice</p>
+                            </div>
+                            
+                            <div class="recording-controls">
+                                <div class="recording-visualizer" id="recording-visualizer">
+                                    <div class="visualizer-bars">
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                        <div class="bar"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="recording-status" id="recording-status">
+                                    <span class="status-text">Ready to record</span>
+                                    <span class="recording-time" id="recording-time">00:00</span>
+                                </div>
+                                
+                                <div class="recording-buttons">
+                                    <button class="btn-record" id="start-record-btn" onclick="startRecording()">
+                                        <span class="record-icon">●</span>
+                                        Start Recording
+                                    </button>
+                                    <button class="btn-stop" id="stop-record-btn" onclick="stopRecording()" disabled>
+                                        <span class="stop-icon">■</span>
+                                        Stop Recording
+                                    </button>
+                                    <button class="btn-play" id="play-record-btn" onclick="playRecording()" disabled>
+                                        <span class="play-icon">▶</span>
+                                        Play
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="recording-preview" id="recording-preview" style="display: none;">
+                                <h4>Recording Preview</h4>
+                                <audio controls id="recorded-audio"></audio>
+                                <div class="preview-actions">
+                                    <button class="btn-primary" onclick="analyzeRecording()">Analyze Recording</button>
+                                    <button class="btn-secondary" onclick="discardRecording()">Discard</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Upload Section -->
+                        <div class="audio-card">
+                            <div class="audio-card-header">
+                                <h3 style="color:white">📁 Upload Audio File</h3>
+                                <p style="color:white">Upload an existing audio file for analysis</p>
+                            </div>
+                            
+                            <div class="upload-area" id="upload-area" onclick="document.getElementById('audio-file-input').click()">
+                                <div class="upload-icon">📎</div>
+                                <div class="upload-text">
+                                    <h4>Click to upload or drag and drop</h4>
+                                    <p>Supports MP3, WAV, M4A files (max 10MB)</p>
+                                </div>
+                                <input type="file" id="audio-file-input" accept="audio/*" style="display: none;" onchange="handleFileUpload(event)">
+                            </div>
+
+                            <div class="upload-preview" id="upload-preview" style="display: none;">
+                                <div class="file-info">
+                                    <div class="file-icon">🎵</div>
+                                    <div class="file-details">
+                                        <h4 id="file-name"></h4>
+                                        <p id="file-size"></p>
+                                    </div>
+                                </div>
+                                <audio controls id="uploaded-audio"></audio>
+                                <div class="upload-actions">
+                                    <button class="btn-primary" onclick="analyzeUploadedFile()">Analyze Audio</button>
+                                    <button class="btn-secondary" onclick="removeUploadedFile()">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Progress -->
+                    <div class="analysis-progress" id="analysis-progress" style="display: none;">
+                        <div class="progress-card">
+                            <div class="progress-header">
+                                <h3 style="color:white">Analyzing Your Voice...</h3>
+                                <p style="color:white">Our AI is processing your audio for mental health insights</p>
+                            </div>
+                            <div class="progress-steps">
+                                <div class="step active" id="step-1">
+                                    <div class="step-icon">🎵</div>
+                                    <span>Processing Audio</span>
+                                </div>
+                                <div class="step" id="step-2">
+                                    <div class="step-icon">🧠</div>
+                                    <span>AI Analysis</span>
+                                </div>
+                                <div class="step" id="step-3">
+                                    <div class="step-icon">📊</div>
+                                    <span>Generating Report</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar">
+                                    <div class="progress-bar-fill" id="analysis-progress-fill"></div>
+                                </div>
+                                <span class="progress-percentage" id="analysis-percentage">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Analyses -->
+                    <div class="recent-analyses" id="recent-analyses">
+                        <h3>Recent Voice Analyses</h3>
+                        <div class="analyses-list" id="analyses-list">
+                            <div class="empty-state">
+                                <div class="empty-icon">🎤</div>
+                                <h4 style="color:white">No analyses yet</h4>
+                                <p style="color:white">Record or upload your first audio file to get started with voice analysis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div class="dashboard-section" id="dashboard-section">
+                    <div class="dashboard-header">
+                        <h2 style="color:white">Analysis Dashboard</h2>
+                        <p style="color:white">Comprehensive insights from your voice analysis</p>
+                    </div>
+
+                    <!-- Analysis Overview Cards -->
+                    <div class="overview-cards" id="overview-cards">
+                        <div class="overview-card">
+                            <div class="card-icon">😊</div>
+                            <div class="card-content">
+                                <h3 style="color:white">Overall Mood</h3>
+                                <p class="card-value" id="overall-mood" style="color:white">Neutral</p>
+                                <p class="card-description" style="color:white"></p>
+                            </div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="card-icon">📈</div>
+                            <div class="card-content">
+                                <h3 style="color:white">Sentiment Score</h3>
+                                <p class="card-value" id="sentiment-score" style="color:white">75%</p>
+                                <p class="card-description" style="color:white"></p>
+                            </div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="card-icon">🎵</div>
+                            <div class="card-content">
+                                <h3 style="color:white">Voice Pitch</h3>
+                                <p class="card-value" id="voice-pitch" style="color:white">150 Hz</p>
+                                <p class="card-description" style="color:white"></p>
+                            </div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="card-icon">🧠</div>
+                            <div class="card-content">
+                                <h3 style="color:white">Depression Risk</h3>
+                                <p class="card-value" id="depression-risk" style="color:white">Low</p>
+                                <p class="card-description" style="color:white"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <div class="charts-section">
+                        <!-- Emotions Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 style="color:white">Emotional Analysis</h3>
+                                <p style="color:white">Distribution of detected emotions in your voice</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="emotions-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Tone Analysis Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 style="color:white">Tone Analysis</h3>
+                                <p style="color:white">Positive, negative, and neutral tone distribution</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="tone-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Sentiment Over Time -->
+                        <div class="chart-card full-width">
+                            <div class="chart-header">
+                                <h3 style="color:white">Sentiment Trend</h3>
+                                <p style="color:white">Your sentiment scores over recent analyses</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="sentiment-trend-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Pitch Analysis -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 style="color:white">Voice Pitch Analysis</h3>
+                                <p style="color:white">Frequency distribution and patterns</p>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="pitch-chart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Depression Indicators -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3 style="color:white">Mental Health Indicators</h3>
+                                <p style="color:white">Key markers for depression assessment</p>
+                            </div>
+                            <div class="indicators-container">
+                                <div class="indicator">
+                                    <div class="indicator-label">Speech Rate</div>
+                                    <div class="indicator-bar">
+                                        <div class="indicator-fill" id="speech-rate-fill" style="width: 65%"></div>
+                                    </div>
+                                    <div class="indicator-value">Normal</div>
+                                </div>
+                                <div class="indicator">
+                                    <div class="indicator-label">Pause Duration</div>
+                                    <div class="indicator-bar">
+                                        <div class="indicator-fill" id="pause-duration-fill" style="width: 45%"></div>
+                                    </div>
+                                    <div class="indicator-value">Low</div>
+                                </div>
+                                <div class="indicator">
+                                    <div class="indicator-label">Voice Energy</div>
+                                    <div class="indicator-bar">
+                                        <div class="indicator-fill" id="voice-energy-fill" style="width: 80%"></div>
+                                    </div>
+                                    <div class="indicator-value">High</div>
+                                </div>
+                                <div class="indicator">
+                                    <div class="indicator-label">Monotone Level</div>
+                                    <div class="indicator-bar">
+                                        <div class="indicator-fill" id="monotone-fill" style="width: 30%"></div>
+                                    </div>
+                                    <div class="indicator-value">Low</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Analysis -->
+                    <div class="detailed-analysis">
+                        <div class="analysis-card">
+                            <h3 style="color:white">AI Analysis Summary</h3>
+                            <div class="analysis-content" id="analysis-summary">
+                                <p style="color:white">Your voice analysis indicates a generally positive emotional state with normal speech patterns. The AI detected balanced emotional expression with good voice energy levels.</p>
+                                <div class="analysis-metrics">
+                                    <div class="metric">
+                                        <span class="metric-label" style="color:white">Confidence Level:</span>
+                                        <span class="metric-value" style="color:white">87%</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label" style="color:white">Analysis Date:</span>
+                                        <span class="metric-value" id="analysis-date" style="color:white">Today</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label" style="color:white">Sample Duration:</span>
+                                        <span class="metric-value" id="sample-duration" style="color:white">45 seconds</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="analysis-card">
+                            <h3 style="color:white">Recommendations</h3>
+                            <div class="recommendations-list" id="recommendations-list">
+                                <div class="recommendation">
+                                    <div class="recommendation-icon">💡</div>
+                                    <div class="recommendation-content">
+                                        <h4 style="color:white">Continue Regular Check-ins</h4>
+                                        <p style="color:white">Your voice patterns show healthy emotional expression. Keep monitoring regularly.</p>
+                                    </div>
+                                </div>
+                                <div class="recommendation">
+                                    <div class="recommendation-icon">🧘</div>
+                                    <div class="recommendation-content">
+                                        <h4 style="color:white">Mindfulness Practice</h4>
+                                        <p style="color:white">Consider incorporating daily mindfulness exercises to maintain emotional balance.</p>
+                                    </div>
+                                </div>
+                                <div class="recommendation">
+                                    <div class="recommendation-icon">📚</div>
+                                    <div class="recommendation-content">
+                                        <h4 style="color:white">Educational Resources</h4>
+                                        <p style="color:white">Explore our curated mental health resources in the Resources section.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resources Section -->
+                <div class="dashboard-section" id="resources-section">
+                    <div class="resources-header">
+                        <h2 style="color:white">Mental Health Resources</h2>
+                        <p style="color:white">Personalized content and tools based on your current mental health profile</p>
+                    </div>
+
+                    <!-- Resource Categories -->
+                    <div class="resource-categories" style="color:white">
+                        <button style="color:white" class="category-btn active" onclick="showResourceCategory('recommended')">Recommended for You</button>
+                        <button class="category-btn" style="color:white" onclick="showResourceCategory('videos')">Videos</button>
+                        <button class="category-btn" style="color:white" onclick="showResourceCategory('articles')">Articles</button>
+                        <button style="color:white" class="category-btn" onclick="showResourceCategory('exercises')">Exercises</button>
+                        <button  style="color:white" class="category-btn" onclick="showResourceCategory('quotes')">Daily Quotes</button>
+                    </div>
+
+                    <!-- Recommended Resources -->
+        <div id="recommended-category" class="resource-category active">
+        <div id="recommended-resources" class="resource-grid">
+            </div>
+    </div>
+    <div class="resource-category" id="videos-category">
+        </div>
+
+                    <!-- Videos Category -->
+                    <div class="resource-category" id="videos-category">
+                        <div class="resource-grid" id="video-resources">
+                            <div class="resource-card video-card">
+                                <div class="resource-thumbnail">
+                                    <div class="play-button">▶</div>
+                                    <img src="/placeholder.svg?height=200&width=300" alt="Meditation Video">
+                                </div>
+                                <div class="resource-content">
+                                    <h3 style="color:white">5-Minute Daily Meditation</h3>
+                                    <p style="color:white">A gentle guided meditation to help reduce stress and anxiety</p>
+                                    <div class="resource-meta">
+                                        <span class="duration">5 min</span>
+                                        <span class="category">Meditation</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card video-card">
+                                <div class="resource-thumbnail">
+                                    <div class="play-button">▶</div>
+                                    <img src="/placeholder.svg?height=200&width=300" alt="Breathing Exercise">
+                                </div>
+                                <div class="resource-content">
+                                    <h3 style="color:white">Deep Breathing Techniques</h3>
+                                    <p style="color:white">Learn effective breathing exercises for anxiety management</p>
+                                    <div class="resource-meta">
+                                        <span class="duration">8 min</span>
+                                        <span class="category">Breathing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card video-card">
+                                <div class="resource-thumbnail">
+                                    <div class="play-button">▶</div>
+                                    <img src="/placeholder.svg?height=200&width=300" alt="Mindfulness Exercise">
+                                </div>
+                                <div class="resource-content">
+                                    <h3 style="color:white">Mindfulness for Beginners</h3>
+                                    <p style="color:white">Introduction to mindfulness practices for mental wellness</p>
+                                    <div class="resource-meta">
+                                        <span class="duration">12 min</span>
+                                        <span class="category">Mindfulness</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Articles Category -->
+                    <div class="resource-category" id="articles-category">
+                        <div class="resource-grid" id="article-resources">
+                            <div class="resource-card article-card">
+                                <div class="resource-content">
+                                    <div class="article-icon">📖</div>
+                                    <h3 style="color:white">Understanding Depression: Signs and Symptoms</h3>
+                                    <p style="color:white">Learn to recognize the early warning signs of depression and when to seek help</p>
+                                    <div class="resource-meta">
+                                        <span class="read-time">5 min read</span>
+                                        <span class="category">Education</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card article-card">
+                                <div class="resource-content">
+                                    <div class="article-icon">🧠</div>
+                                    <h3 style="color:white">The Science of Mental Health</h3>
+                                    <p style="color:white">Explore the latest research on mental health and brain science</p>
+                                    <div class="resource-meta">
+                                        <span class="read-time">8 min read</span>
+                                        <span class="category">Science</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="resource-card article-card">
+                                <div class="resource-content">
+                                    <div class="article-icon">💪</div>
+                                    <h3 style="color:white">Building Resilience in Daily Life</h3>
+                                    <p style="color:white">Practical strategies for developing emotional resilience and coping skills</p>
+                                    <div class="resource-meta">
+                                        <span class="read-time">6 min read</span>
+                                        <span class="category">Self-Help</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercises Category -->
+                    <div class="resource-category" id="exercises-category">
+                        <div class="resource-grid" id="exercise-resources">
+                            <div class="resource-card exercise-card">
+                                <div class="resource-content">
+                                    <div class="exercise-icon">🧘‍♀️</div>
+                                    <h3 style="color:white">Progressive Muscle Relaxation</h3>
+                                    <p style="color:white">A step-by-step guide to releasing physical tension and stress</p>
+                                    <button class="start-exercise-btn" onclick="startExercise('pmr')">Start Exercise</button>
+                                </div>
+                            </div>
+
+                            <div class="resource-card exercise-card">
+                                <div class="resource-content">
+                                    <div class="exercise-icon">📝</div>
+                                    <h3 style="color:white">Gratitude Journaling</h3>
+                                    <p style="color:white">Practice daily gratitude to improve mood and mental well-being</p>
+                                    <button class="start-exercise-btn" onclick="startExercise('gratitude')">Start Exercise</button>
+                                </div>
+                            </div>
+
+                            <div class="resource-card exercise-card">
+                                <div class="resource-content">
+                                    <div class="exercise-icon">🎯</div>
+                                    <h3 style="color:white">Thought Challenging</h3>
+                                    <p style="color:white">Learn to identify and reframe negative thought patterns</p>
+                                    <button class="start-exercise-btn" onclick="startExercise('thought-challenge')">Start Exercise</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quotes Category -->
+                    <div class="resource-category" id="quotes-category">
+                        <div class="daily-quote-card">
+                            <div class="quote-header">
+                                <h3 style="color:white">Daily Inspiration</h3>
+                                <button class="refresh-quote-btn" onclick="refreshDailyQuote()">🔄</button>
+                            </div>
+                            <div class="quote-content" id="daily-quote">
+                                <blockquote>
+                                    "The greatest revolution of our generation is the discovery that human beings, by changing the inner attitudes of their minds, can change the outer aspects of their lives."
+                                </blockquote>
+                                <cite>— William James</cite>
+                            </div>
+                        </div>
+
+                        <div class="quotes-grid" id="quotes-grid">
+                            <!-- Additional inspirational quotes -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Journal Section -->
+                <div class="dashboard-section" id="journal-section">
+                    <div class="journal-header">
+                        <h2 style="color:white">Personal Journal</h2>
+                        <p style="color:white">Track your thoughts, feelings, and progress with text and voice notes</p>
+                    </div>
+
+                    <!-- Journal Navigation -->
+                    <div class="journal-nav">
+                        <button class="journal-nav-btn active" onclick="showJournalView('entries')">My Entries</button>
+                        <button class="journal-nav-btn" onclick="showJournalView('new')">New Entry</button>
+                        <button class="journal-nav-btn" onclick="showJournalView('voice')">Voice Notes</button>
+                        <button class="journal-nav-btn" onclick="showJournalView('insights')">Insights</button>
+                    </div>
+
+                    <!-- Journal Entries View -->
+                    <div class="journal-view active" id="entries-view">
+                        <div class="journal-entries" id="journal-entries">
+                            <!-- Entries will be dynamically loaded -->
+                        </div>
+                    </div>
+
+                    <!-- New Entry View -->
+                    <div class="journal-view" id="new-view">
+                        <div class="new-entry-card">
+                            <div class="entry-header">
+                                <h3 style="color:white">New Journal Entry</h3>
+                                <div class="entry-date" id="current-date" style="color:white"></div>
+                            </div>
+                            
+                            <div class="entry-form">
+                                <div class="mood-selector">
+                                    <label style="color:white">How are you feeling today?</label>
+                                        <button class="mood-btn" data-mood="great" onclick="selectMood('great')" style="color:white">😊 Great</button>
+                                        <button class="mood-btn" data-mood="good" onclick="selectMood('good')" style="color:white">🙂 Good</button>
+                                        <button class="mood-btn" data-mood="okay" onclick="selectMood('okay')" style="color:white">😐 Okay</button>
+                                        <button class="mood-btn" data-mood="sad" onclick="selectMood('sad')" style="color:white">😢 Sad</button>
+                                        <button class="mood-btn" data-mood="anxious" onclick="selectMood('anxious')" style="color:white">😰 Anxious</button>
+        </div>
+
+                                <div class="entry-content">
+                                    <label for="entry-title" style="color:white">Title (optional)</label>
+                                    <input type="text" id="entry-title" placeholder="Give your entry a title..." style="color:white">
+                                    
+                                    <label for="entry-text" style="color:white">Your thoughts</label>
+                                    <textarea id="entry-text" placeholder="What's on your mind today? How are you feeling? What happened today that you'd like to remember?" style="color:white"></textarea>
+                                </div>
+
+                                <div class="entry-actions">
+                                    <button class="btn-secondary" onclick="clearEntry()">Clear</button>
+                                    <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Voice Notes View -->
+                    <div class="journal-view" id="voice-view">
+                        <div class="voice-notes-container">
+                            <div class="voice-recorder-card">
+                                <h3 style="color:white">Record Voice Note</h3>
+                                <p style="color:white">Capture your thoughts and feelings with voice recordings</p>
+                                
+                                <div class="voice-recorder">
+                                    <div class="voice-visualizer" id="journal-voice-visualizer">
+                                        <div class="voice-bars">
+                                            <div class="voice-bar"></div>
+                                            <div class="voice-bar"></div>
+                                            <div class="voice-bar"></div>
+                                            <div class="voice-bar"></div>
+                                            <div class="voice-bar"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="voice-controls">
+                                        <button class="voice-record-btn" id="journal-record-btn" onclick="startJournalRecording()">
+                                            <span class="record-icon">🎤</span>
+                                            Start Recording
+                                        </button>
+                                        <button class="voice-stop-btn" id="journal-stop-btn" onclick="stopJournalRecording()" disabled>
+                                            <span class="stop-icon">⏹</span>
+                                            Stop
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="voice-status" id="journal-voice-status">
+                                        <span>Ready to record</span>
+                                        <span class="voice-timer" id="journal-voice-timer">00:00</span>
+                                    </div>
+                                </div>
+
+                                <div class="voice-preview" id="journal-voice-preview" style="display: none;">
+                                    <audio controls id="journal-recorded-audio"></audio>
+                                    <div class="voice-preview-actions">
+                                        <input type="text" id="voice-note-title" placeholder="Add a title for this voice note...">
+                                        <div class="voice-actions">
+                                            <button class="btn-secondary" onclick="discardJournalRecording()">Discard</button>
+                                            <button class="btn-primary" onclick="saveVoiceNote()">Save Voice Note</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="voice-notes-list" id="voice-notes-list">
+                                <!-- Voice notes will be dynamically loaded -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Insights View -->
+                    <div class="journal-view" id="insights-view">
+                        <div class="insights-container">
+                            <div class="mood-trends-card">
+                                <h3>Mood Trends</h3>
+                                <div class="mood-chart-container">
+                                    <canvas id="mood-trend-chart"></canvas>
+                                </div>
+                            </div>
+
+                            <div class="journal-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">📝</div>
+                                    <div class="stat-content">
+                                        <h4 id="total-entries">0</h4>
+                                        <p>Total Entries</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">🎤</div>
+                                    <div class="stat-content">
+                                        <h4 id="total-voice-notes">0</h4>
+                                        <p>Voice Notes</p>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">📅</div>
+                                    <div class="stat-content">
+                                        <h4 id="streak-days">0</h4>
+                                        <p>Day Streak</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="insights-summary">
+                                <h3>Your Journey</h3>
+                                <div class="insight-item">
+                                    <div class="insight-icon">📈</div>
+                                    <div class="insight-content">
+                                        <h4>Most Common Mood</h4>
+                                        <p id="common-mood">Good - You've been feeling positive most days</p>
+                                    </div>
+                                </div>
+                                <div class="insight-item">
+                                    <div class="insight-icon">⭐</div>
+                                    <div class="insight-content">
+                                        <h4>Best Day</h4>
+                                        <p id="best-day">Your highest mood was recorded on a Tuesday</p>
+                                    </div>
+                                </div>
+                                <div class="insight-item">
+                                    <div class="insight-icon">💭</div>
+                                    <div class="insight-content">
+                                        <h4>Reflection</h4>
+                                        <p id="reflection-insight">You tend to write longer entries when feeling contemplative</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Section -->
+                <div style="color:white" class="dashboard-section" id="profile-section">
+                    <div class="profile-header">
+                        <h2 style="color:white">Profile Settings</h2>
+                        <p style="color:white">Manage your account information and preferences</p>
+                    </div>
+
+                    <div class="profile-content">
+                         <!-- Profile Overview Card -->
+                        <div class="profile-overview-card">
+                            <div class="profile-avatar-section">
+                                <div class="profile-avatar" id="profile-avatar">
+                                    <span id="avatar-initials"></span>
+                                </div>
+                                <button class="change-avatar-btn" onclick="changeAvatar()">Change Avatar</button>
+                            </div>
+                            
+                            <div class="profile-info">
+                                <h3 id="profile-display-name" style="color:white"></h3>
+                                <p id="profile-email" style="color:white"></p>
+                                <div class="profile-stats">
+                                    <div class="profile-stat">
+                                        <span class="stat-number" id="days-active">0</span>
+                                        <span class="stat-label" style="color:white">Days Active</span>
+                                    </div>
+                                    <div class="profile-stat">
+                                        <span class="stat-number" id="total-analyses">0</span>
+                                        <span class="stat-label" style="color:white">Voice Analyses</span>
+                                    </div>
+                                    <div class="profile-stat">
+                                        <span class="stat-number" id="journal-entries-count">0</span>
+                                        <span class="stat-label" style="color:white">Journal Entries</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Profile Settings Tabs -->
+                        <div class="profile-tabs">
+                            <button class="profile-tab-btn active" onclick="showProfileTab('personal')">Personal Information</button>
+                            <button class="profile-tab-btn active" onclick="showProfileTab('personal')" style="color:white">Personal Information</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('preferences')">Preferences</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('preferences')" style="color:white">Preferences</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('privacy')">Privacy & Security</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('privacy')" style="color:white">Privacy & Security</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('data')">Data & Export</button>
+                            <button class="profile-tab-btn" onclick="showProfileTab('data')" style="color:white">Data & Export</button>
+                        </div>
+
+                         <!-- Personal Information Tab -->
+                        <div class="profile-tab-content active" id="personal-tab">
+                            <div class="profile-form-card">
+                                <h3 style="color:white">Personal Information</h3>
+                                <form id="personal-info-form" onsubmit="updatePersonalInfo(event)">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="profile-name">Full Name</label>
+                                            <label for="profile-name" style="color:white">Full Name</label>
+                                            <input type="text" id="profile-name" required>
+                                            <input type="text" id="profile-name" required style="color:white">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="profile-email-input">Email Address</label>
+                                            <label for="profile-email-input" style="color:white">Email Address</label>
+                                            <input type="email" id="profile-email-input" required>
+                                            <input type="email" id="profile-email-input" required style="color:white">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="profile-phone">Phone Number (Optional)</label>
+                                            <label for="profile-phone" style="color:white">Phone Number (Optional)</label>
+                                            <input type="tel" id="profile-phone">
+                                            <input type="tel" id="profile-phone" style="color:white">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="profile-birthdate">Date of Birth (Optional)</label>
+                                            <label for="profile-birthdate" style="color:white">Date of Birth (Optional)</label>
+                                            <input type="date" id="profile-birthdate">
+                                            <input type="date" id="profile-birthdate" style="color:white">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="profile-bio">About Me (Optional)</label>
+                                        <label for="profile-bio" style="color:white">About Me (Optional)</label>
+                                        <textarea id="profile-bio" placeholder="Tell us a bit about yourself and your mental health journey..."></textarea>
+                                        <textarea id="profile-bio" placeholder="Tell us a bit about yourself and your mental health journey..." style="color:white"></textarea>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="button" class="btn-secondary" onclick="resetPersonalInfo()" style="color:white">Reset</button>
+                                        <button type="submit" class="btn-primary" style="color:white">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                         <!-- Preferences Tab -->
+                        <div class="profile-tab-content" id="preferences-tab">
+                            <div class="profile-form-card">
+                                <h3>App Preferences</h3>
+                                
+                                <div class="preference-section">
+                                    <h4>Notifications</h4>
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Daily Check-in Reminders</label>
+                                            <p>Get reminded to complete your daily mental health check-in</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="daily-reminders" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Analysis Complete Notifications</label>
+                                            <p>Get notified when your voice analysis is ready</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="analysis-notifications" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Weekly Progress Reports</label>
+                                            <p>Receive weekly summaries of your mental health progress</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="weekly-reports" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="preference-section">
+                                    <h4>Display Settings</h4>
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Theme</label>
+                                            <p>Choose your preferred app theme</p>
+                                        </div>
+                                        <select id="theme-select" class="preference-select">
+                                            <option value="light">Light</option>
+                                            <option value="dark">Dark</option>
+                                            <option value="auto">Auto (System)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Language</label>
+                                            <p>Select your preferred language</p>
+                                        </div>
+                                        <select id="language-select" class="preference-select">
+                                            <option value="en">English</option>
+                                            <option value="es">Spanish</option>
+                                            <option value="fr">French</option>
+                                            <option value="de">German</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary" onclick="savePreferences()">Save Preferences</button>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Privacy & Security Tab -->
+                        <div class="profile-tab-content" id="privacy-tab">
+                            <div class="profile-form-card">
+                                <h3>Privacy & Security</h3>
+                                
+                                <div class="preference-section">
+                                    <h4>Data Privacy</h4>
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Anonymous Analytics</label>
+                                            <p>Help improve our service by sharing anonymous usage data</p>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" id="anonymous-analytics" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+
+                                    <div class="preference-item">
+                                        <div class="preference-info">
+                                            <label>Data Retention</label>
+                                            <p>How long should we keep your voice recordings?</p>
+                                        </div>
+                                        <select id="data-retention-select" class="preference-select">
+                                            <option value="30">30 days</option>
+                                            <option value="90" selected>90 days</option>
+                                            <option value="365">1 year</option>
+                                            <option value="forever">Keep forever</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="preference-section">
+                                    <h4>Account Security</h4>
+                                    <div class="security-item">
+                                        <div class="security-info">
+                                            <h5>Change Password</h5>
+                                            <p>Update your account password for better security</p>
+                                        </div>
+                                        <button class="btn-secondary" onclick="showChangePassword()">Change Password</button>
+                                    </div>
+
+                                    <div class="security-item">
+                                        <div class="security-info">
+                                            <h5>Two-Factor Authentication</h5>
+                                            <p>Add an extra layer of security to your account</p>
+                                        </div>
+                                        <button class="btn-secondary" onclick="setup2FA()">Setup 2FA</button>
+                                    </div>
+
+                                    <div class="security-item">
+                                        <div class="security-info">
+                                            <h5>Active Sessions</h5>
+                                            <p>Manage devices that are signed into your account</p>
+                                        </div>
+                                        <button class="btn-secondary" onclick="viewActiveSessions()">View Sessions</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button type="button" class="btn-primary" onclick="savePrivacySettings()">Save Settings</button>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Data & Export Tab -->
+                        <div class="profile-tab-content" id="data-tab">
+                            <div class="profile-form-card">
+                                <h3>Data Management</h3>
+                                
+                                <div class="data-section">
+                                    <h4>Export Your Data</h4>
+                                    <p>Download a copy of all your data including journal entries, voice analyses, and assessment results.</p>
+                                    
+                                    <div class="export-options">
+                                        <div class="export-item">
+                                            <div class="export-info">
+                                                <h5>Journal Entries</h5>
+                                                <p>Export all your journal entries and voice notes</p>
+                                            </div>
+                                            <button class="btn-secondary" onclick="exportData('journal')">Export Journal</button>
+                                        </div>
+
+                                        <div class="export-item">
+                                            <div class="export-info">
+                                                <h5>Voice Analysis Reports</h5>
+                                                <p>Download all your voice analysis results and insights</p>
+                                            </div>
+                                            <button class="btn-secondary" onclick="exportData('analysis')">Export Reports</button>
+                                        </div>
+
+                                        <div class="export-item">
+                                            <div class="export-info">
+                                                <h5>Complete Data Archive</h5>
+                                                <p>Download everything - all data associated with your account</p>
+                                            </div>
+                                            <button class="btn-primary" onclick="exportData('complete')">Export All Data</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="data-section danger-zone">
+                                    <h4>Danger Zone</h4>
+                                    <div class="danger-item">
+                                        <div class="danger-info">
+                                            <h5>Delete All Voice Recordings</h5>
+                                            <p>Permanently delete all stored voice recordings. This cannot be undone.</p>
+                                        </div>
+                                        <button class="btn-danger" onclick="deleteVoiceRecordings()">Delete Recordings</button>
+                                    </div>
+
+                                    <div class="danger-item">
+                                        <div class="danger-info">
+                                            <h5>Delete Account</h5>
+                                            <p>Permanently delete your account and all associated data. This cannot be undone.</p>
+                                        </div>
+                                        <button class="btn-danger" onclick="deleteAccount()">Delete Account</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <script src="https://cdn.botpress.cloud/webchat/v3.3/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2025/09/27/07/20250927074001-4UHT11BJ.js" defer></script>
+</body>
+</html>
