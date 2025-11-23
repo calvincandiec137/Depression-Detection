@@ -1,4 +1,4 @@
-# whatIsAnApple: Voice-based Depression Detection
+# Voice-based Depression Detection
 
 A multi-modal AI system to detect emotional distress and depression from voice analysis.
 
